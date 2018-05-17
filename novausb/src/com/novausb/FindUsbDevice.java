@@ -1,5 +1,6 @@
 package com.novausb;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,7 +8,9 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.filechooser.FileSystemView;
@@ -45,6 +48,7 @@ public class FindUsbDevice {
                     //formatear(aDrive.toString().replace("\\", ""), "/q", "/fs:NTFS");
                     //copiarAUsb(aDrive.toString());
                     //permisoSoloLectura(aDrive.toString().replace("\\", ""));
+                    ejecutarDiskPart();
                     break;
                 }
             }
@@ -73,8 +77,8 @@ public class FindUsbDevice {
             Logger.getLogger(FindUsbDevice.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public void permisoSoloLectura(String drive){
+
+    public void permisoSoloLectura(String drive) {
         Process p;
         try {
             p = Runtime.getRuntime().exec("CMD /C attrib +r " + drive);
@@ -85,6 +89,31 @@ public class FindUsbDevice {
             System.out.println(e);
         } catch (InterruptedException ex) {
             System.out.println(ex);
+        } finally {
+
+        }
+    }
+
+    public void ejecutarDiskPart() {
+        Process p;
+        try {
+            p = Runtime.getRuntime().exec("CMD diskpart");
+
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
+            BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            System.out.println("cmd: "+input.readLine());
+            /*writer.write("cmd diskpart");
+            writer.flush();
+            System.out.println("cmd: "+input.readLine());
+            writer.write("list disk");
+            writer.flush();
+            System.out.println("cmd: "+input.readLine());*/
+            
+            input.close();
+            writer.close();
+            
+        } catch (IOException e) {
+            System.out.println(e);
         } finally {
 
         }
